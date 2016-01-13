@@ -6,13 +6,12 @@ __author__ = 'c8d8z8@gmail.com'
 import json
 import commonlib.http
 import commonlib.path
+import commonlib.systeminfo
 from bs4 import BeautifulSoup
 import re
 import sys 
-reload(sys) 
-sys.setdefaultencoding('utf-8')
 
-print ('current path:',commonlib.path.cur_dir())
+print ('current path:',commonlib.path.cur_dir().encode(commonlib.systeminfo.os_coding))
 
 import sqlite3
 conn = sqlite3.connect('gyq.db3')
@@ -41,7 +40,7 @@ date_section='0'
 import ConfigParser
 
 ini_file = ConfigParser.ConfigParser()
-ini_file.read(commonlib.path.cur_file_dir('yanzhuzi.ini'))
+ini_file.read(commonlib.path.cur_file_dir(u'yanzhuzi.ini'))
 
 web_url = ini_file.get('global','web_url')
 hospitalid = ini_file.get('global','hospitalid')
@@ -190,8 +189,8 @@ def download_file():
                 fname = u'左原.jpg'
                 img2 = img.replace('fundus','fundus2')
                 img3 = img.replace('fundus','fundus3')
-                commonlib.http.download(img,fpath.encode('gbk'),'左深1.jpg'.encode('gbk'))
-                commonlib.http.download(img,fpath.encode('gbk'),'左深2.jpg'.encode('gbk'))
+                commonlib.http.download(img,fpath.encode('gbk'),u'左深1.jpg'.encode('gbk'))
+                commonlib.http.download(img,fpath.encode('gbk'),u'左深2.jpg'.encode('gbk'))
             if i == 3:
                 fname = u'左原.jpg'
             commonlib.http.download(img,fpath.encode('gbk'),fname.encode('gbk'))
