@@ -24,6 +24,7 @@ import time
 #百度 配置
 BDUSS_FILE = 'load.bduss'
 BAIDUID_FILE = 'load.baiduid'
+BAIDUAUTH_FILE = 'baidu_auth.txt'
 SIGN_INTERVAL = 5
 
 # baidu login http request paramters
@@ -82,6 +83,22 @@ class BaiduTieba(object):
                 baiduid = baiduid.strip("\r\n")
                 return baiduid
         return None
+    
+    def __readbaid_auth__(self):
+        #读取baidu_auth信息
+        if os.path.exists(os.path.join(cur_dir(),BAIDUAUTH_FILE)):
+            print os.path.join(cur_dir(),BAIDUAUTH_FILE)
+            
+            with open(os.path.join(cur_dir(),BAIDUAUTH_FILE),'r') as f:
+                # print type(f) # 注意系统变量 file
+                baiduauth = f.read()
+                baiduauth = baiduauth.strip("\r\n")
+                tempArr = baiduauth.split(';')
+                baiduid = tempArr[0].replace('BAIDUID=','')
+                bduss = tempArr[1].split('=')[1]
+                return (baiduid,bduss)
+        return None
+
 
     def __writebduss__(self,bduss,baiduid):
         # 写入bduss信息
@@ -91,6 +108,10 @@ class BaiduTieba(object):
         # 写入bduss信息
         file_object = open(os.path.join(cur_dir(),BDUSS_FILE), 'w')
         file_object.write(bduss)
+        file_object.close()
+        # 写入baidu_auth信息
+        file_object = open(os.path.join(cur_dir(),BAIDUAUTH_FILE), 'w')
+        file_object.write('BAIDUID=' + self.baiduid + '; BDUSS=' + self.bduss)
         file_object.close()
 
     def _get_token(self):

@@ -58,3 +58,6 @@ target/
 
 # Custom
 *.bduss
+python2/vcode.jpg
+
+python2/load.baiduid
