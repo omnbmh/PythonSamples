@@ -5,7 +5,7 @@ __author__ = 'c8d8z8@gmail.com'
 
 import mysql.connector
 
-config = {'host':'10.10.106.191','user':'root','password':'code4world','port':3306,'database':'test','charset':'utf8'}
+config = {'host':'10.106.91.54','user':'root','password':'code4world','port':3306,'database':'test','charset':'utf8'}
 
 try:
     conn = mysql.connector.connect(**config)
@@ -18,6 +18,7 @@ def execute(sql,data):
     cursor = conn.cursor()
     try:
         result = cursor.execute(sql,data)
+        
         return result
     except mysql.connector.Error as e:
         print 'mysql execute error !{}'.format(e)
@@ -31,3 +32,6 @@ def read():
     pass
 def delete():
     pass
+
+def commit():
+    conn.commit()

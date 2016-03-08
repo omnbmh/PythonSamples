@@ -25,6 +25,9 @@ import http
 
 #业务URL常量
 import constant
+import mysqllib
+import random
+import commonlib
 
 USERNAME = 'wangfengyang'
 PASSWORD = '252518341'
@@ -45,7 +48,7 @@ class ZQB():
             self.log_file = self.log_file + '_pe_' + planexecutionid
         self.__id = self.log_file
         self.__logger = FileLogger('zqb.'+self.log_file,'log/'+self.log_file+'.log')
-        self.log_info('-- 执行任务 %s --' % self.__id)
+        self.log_info(u'-- 执行任务 %s --' % self.__id)
         if planid:
             self.plan = self.select_plan(planid)
         if planexecutionid:
@@ -56,6 +59,7 @@ class ZQB():
             self.__logger.info(message)
         else:
             logger.info(message)
+
     @staticmethod
     def request(url, data):
         #logger.debug('url:'+url)
@@ -273,10 +277,26 @@ class ZQB():
         '''
         分页查询用户信息
         '''
-        data = {'page':'1','rows':'20','sort':'pkUser','order':'desc'}
+        if not page :
+            page = 1
+        data = {'page':page,'rows':'100','sort':'pkUser','order':'desc'}
         rt = ZQB.request('http://zqbam.creditease.corp/pages/zqUser/showZqUser.do',data)
         jrt = json.loads(rt)
         return jrt['rows']
+
+    def save_user(self,userinfo):
+        sql = '''
+            INSERT INTO `user` (`id`, `id_number`, `name`, `phone`, `email`) VALUES (%s, %s, %s, %s, %s)
+            '''
+        id = commonlib.dateRandomID()
+        mysqllib.execute(sql,(id,userinfo['idnumber'],userinfo['name'],userinfo['mobile'],userinfo['email']))
+        sql = '''
+            insert into `user_zanqianba`(`user_id`,`user_info`) values (%s,%s)
+            '''
+        mysqllib.execute(sql,(id,json.dumps(userinfo)))
+        mysqllib.commit()
+        print 'save user '+json.dumps(userinfo)+' ok'
+        time.sleep(float(2))
 
 class FileLogger():
     def __init__(self, name, file):
