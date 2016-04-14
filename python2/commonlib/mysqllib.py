@@ -5,10 +5,10 @@ __author__ = 'c8d8z8@gmail.com'
 
 import mysql.connector
 
-config = {'host':'10.106.91.54','user':'root','password':'code4world','port':3306,'database':'test','charset':'utf8'}
+config = {'host':'10.106.89.104','user':'root','password':'123456','port':8806,'database':'test','charset':'utf8'}
 
 try:
-    conn = mysql.connector.connect(**config)
+    #conn = mysql.connector.connect(**config)
     print 'connect successfully!'
 except mysql.connector.Error as e:
     print 'connect fails!{}'.format(e)

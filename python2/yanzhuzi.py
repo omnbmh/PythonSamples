@@ -165,7 +165,7 @@ def get_list(page):
     return True
     
 def download_file():
-    cur.execute('select *from yanzhuzi')
+    cur.execute('select * from yanzhuzi')
     rows = cur.fetchall()
     for row in rows:
         print row

@@ -19,8 +19,10 @@ opener.addheaders = [('User-agent', 'Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like
 import re
 import hashlib
 import json
-
+import datetime
 import os
+
+import mysqllib
 
 def request(url,data = None,cookie=None):
     print url
@@ -43,6 +45,8 @@ def request(url,data = None,cookie=None):
     print resp
     #print resp.status
     #print resp.encode(decode)
+
+    #insert_req_to_musql(resp,url,post_data)
     return resp
 
 def download(url,fpath,fname):
@@ -76,9 +80,35 @@ def paramparse(param):
 def cookies():
     return cookie
 
+def insert_req_to_musql(data,url,param):
+    sql_data = {}
+    
+    print json.dumps(data,ensure_ascii=False,indent=2)
+    
+    sql_data['json_data'] = json.dumps(data,ensure_ascii=False,indent=2)
+    sql_data['snap_date'] = datetime.datetime.now()
+    sql_data['req_url'] = url
+    sql_data['req_param'] = param
+    
+    sql = '''
+        insert into `json_data`(`json_data`,`snap_date`,`req_url`,`req_param`) values (%(json_data)s,%(snap_date)s,%(req_url)s,%(req_param)s)
+        '''
+    mysqllib.execute(sql,sql_data)
+    mysqllib.commit()
+    print 'request insert into mysql complete.'
+
 def test_request():
-    #request('https://www.baidu.com/s',{'wd':'python'},None)
-    request('https://www.baidu.com',None,None)
+    url = 'https://www.itoumi.com/sxb/products/loans.json'
+    data = {}
+    data['url'] = 'products/loans.json'
+    data['prodNo'] = '20150811163740805506'
+    data['startId'] =  1
+    data['maxRecords'] = 5
+    
+    rt = request(url,data)
+    jrt = json.loads(rt)
+
+    pass
 
 if __name__ == '__main__':
     test_request()

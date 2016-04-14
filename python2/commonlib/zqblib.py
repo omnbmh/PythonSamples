@@ -28,6 +28,7 @@ import constant
 import mysqllib
 import random
 import commonlib
+import capturedatalib
 
 USERNAME = 'wangfengyang'
 PASSWORD = '252518341'
@@ -273,7 +274,7 @@ class ZQB():
         rt = ZQB.request('http://zqbam.creditease.corp/pages/zqPlan/modZqPlan.do',data)
         self.log_info('修改计划结果'+rt)
 
-    def select_user_info(self,page = None):
+    def capture_user_info(self,page = None):
         '''
         分页查询用户信息
         '''
@@ -282,21 +283,18 @@ class ZQB():
         data = {'page':page,'rows':'100','sort':'pkUser','order':'desc'}
         rt = ZQB.request('http://zqbam.creditease.corp/pages/zqUser/showZqUser.do',data)
         jrt = json.loads(rt)
-        return jrt['rows']
+        
+        for user in jrt['rows']:
+            #print loan
+            #print json.dumps(data)
+            print json.dumps(user,ensure_ascii=False)
+            store_data = {}
+            store_data['req_param'] = json.dumps(data)
+            store_data['json_data'] = json.dumps(user,ensure_ascii=False)
+            store_data['req_url'] = 'http://zqbam.creditease.corp/pages/zqUser/showZqUser.do'
+        
+            capturedatalib.save2sqlite3(store_data)
 
-    def save_user(self,userinfo):
-        sql = '''
-            INSERT INTO `user` (`id`, `id_number`, `name`, `phone`, `email`) VALUES (%s, %s, %s, %s, %s)
-            '''
-        id = commonlib.dateRandomID()
-        mysqllib.execute(sql,(id,userinfo['idnumber'],userinfo['name'],userinfo['mobile'],userinfo['email']))
-        sql = '''
-            insert into `user_zanqianba`(`user_id`,`user_info`) values (%s,%s)
-            '''
-        mysqllib.execute(sql,(id,json.dumps(userinfo)))
-        mysqllib.commit()
-        print 'save user '+json.dumps(userinfo)+' ok'
-        time.sleep(float(2))
 
 class FileLogger():
     def __init__(self, name, file):
