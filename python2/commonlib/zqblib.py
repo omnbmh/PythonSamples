@@ -295,6 +295,46 @@ class ZQB():
         
             capturedatalib.save2sqlite3(store_data)
 
+    def capture_loan(self,page = None):
+        '''
+            查询详细投资
+        '''
+        url = "http://zqbam.creditease.corp/pages/zqLoanmoneydet/showZqLoanmoneydet.do"
+        data = {"page":page,"rows":100,"sort":'pkLoanmoneydet',"order":"desc"}
+        rt = ZQB.request(url,data)
+        jrt = json.loads(rt)
+        if jrt['total'] > 0:
+            for loan in jrt['rows']:
+                #print loan
+                #print json.dumps(data)
+                print json.dumps(loan,ensure_ascii=False)
+                store_data = {}
+                store_data['req_param'] = json.dumps(data)
+                store_data['json_data'] = json.dumps(loan,ensure_ascii=False)
+                store_data['req_url'] = url
+            
+                capturedatalib.save2sqlite3(store_data)
+
+    def capture_loan_total(self,page = None):
+        '''
+        查询详细投资
+        '''
+        url = "http://zqbam.creditease.corp/pages/zqLoanmoney/showZqLoanmoney.do"
+        data = {"page":page,"rows":24,"sort":'pkLoanmoney',"order":"desc"}
+        rt = ZQB.request(url,data)
+        jrt = json.loads(rt)
+        if jrt['total'] > 0:
+            for loan in jrt['rows']:
+                #print loan
+                #print json.dumps(data)
+                print json.dumps(loan,ensure_ascii=False)
+                store_data = {}
+                store_data['req_param'] = json.dumps(data)
+                store_data['json_data'] = json.dumps(loan,ensure_ascii=False)
+                store_data['req_url'] = url
+                                                        
+                capturedatalib.save2sqlite3(store_data)
+
 
 class FileLogger():
     def __init__(self, name, file):

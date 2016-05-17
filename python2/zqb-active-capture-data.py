@@ -23,9 +23,16 @@ zqb = commonlib.zqblib.ZQB()
 
 #commonlib.capturedatalib.close_sqlite3()
 
-commonlib.capturedatalib.init_sqlite3(commonlib.pathlib.cur_file_dir('zqb_loan.sqlite3'))
+#commonlib.capturedatalib.init_sqlite3(commonlib.pathlib.cur_file_dir('zqb_loan.sqlite3'))
 
-for i in range(1,110):
-     zqb.capture_loan(i)
+#for i in range(1,254):
+#     zqb.capture_loan(i)
+
+#commonlib.capturedatalib.close_sqlite3()
+
+commonlib.capturedatalib.init_sqlite3(commonlib.pathlib.cur_file_dir('zqb_loan_total.sqlite3'))
+
+for i in range(1,40):
+    zqb.capture_loan_total(i)
 
 commonlib.capturedatalib.close_sqlite3()
