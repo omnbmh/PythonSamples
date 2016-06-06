@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 __author__ = 'c8d8z8@gmail.com'
-
+'''
+http 请求 支持cookie
+'''
 import urllib
 import urllib2
 import cookielib
@@ -82,14 +84,14 @@ def cookies():
 
 def insert_req_to_musql(data,url,param):
     sql_data = {}
-    
+
     print json.dumps(data,ensure_ascii=False,indent=2)
-    
+
     sql_data['json_data'] = json.dumps(data,ensure_ascii=False,indent=2)
     sql_data['snap_date'] = datetime.datetime.now()
     sql_data['req_url'] = url
     sql_data['req_param'] = param
-    
+
     sql = '''
         insert into `json_data`(`json_data`,`snap_date`,`req_url`,`req_param`) values (%(json_data)s,%(snap_date)s,%(req_url)s,%(req_param)s)
         '''
@@ -104,7 +106,7 @@ def test_request():
     data['prodNo'] = '20150811163740805506'
     data['startId'] =  1
     data['maxRecords'] = 5
-    
+
     rt = request(url,data)
     jrt = json.loads(rt)
 

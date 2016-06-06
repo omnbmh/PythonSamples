@@ -37,6 +37,7 @@ vcode_md5='vcode_md5='
 pn='pn=1'
 
 # baidu constants
+GID='965D5E0-3500-4CE2-B4DC-8AA0D833BF6D'
 
 #TT='tt=1454396078948'
 
@@ -83,12 +84,12 @@ class BaiduTieba(object):
                 baiduid = baiduid.strip("\r\n")
                 return baiduid
         return None
-    
+
     def __readbaid_auth__(self):
         #读取baidu_auth信息
         if os.path.exists(os.path.join(cur_dir(),BAIDUAUTH_FILE)):
             print os.path.join(cur_dir(),BAIDUAUTH_FILE)
-            
+
             with open(os.path.join(cur_dir(),BAIDUAUTH_FILE),'r') as f:
                 # print type(f) # 注意系统变量 file
                 baiduauth = f.read()
@@ -167,16 +168,17 @@ class BaiduTieba(object):
         url = 'http://wappass.baidu.com/wp/api/login/check?'
         # check used
         CLIENTFROM='clientfrom=native'
-        GID='gid=BE56965-3AC1-4C07-9A86-F5E366F23BF8'
+        gid='gid='+GID
 
-        data = CLIENTFROM + '&' + GID + '&tt=' + str(int(time.time()*1000)) + '&username='+uname
+        data = CLIENTFROM + '&' + gid + '&tt=' + str(int(time.time()*1000)) + '&username='+uname
         data = http.request(url+data)
         print data
 
 
     def login(self,acc,pwd,vcode='',vcodestr=''):
 
-        url = 'https://passport.baidu.com/v2/api/?login'
+        #url = 'https://passport.baidu.com/v2/api/?login' # 抄袭不如自己搞一遍
+        url = 'http://wappass.baidu.com/wp/api/login'
         pubkey , rsakey = self._get_publickey()
 
         #print pubkey
@@ -185,36 +187,41 @@ class BaiduTieba(object):
         password_rsaed = base64.b64encode(rsa.encrypt(pwd, key))
 
         data = {}
-        data[u'staticpage'] = 'https://passport.baidu.com/static/passpc-account/html/v3Jump.html'
-        data[u'charset'] = 'UTF-8'
-        data[u'token'] = self.token
-        data[u'tpl']='tb'
-        data[u'subpro'] = ''
-        data[u'apiver'] = 'v3'
-        data[u'tt']=str(int(time.time()))
-        data[u'codestring']=vcodestr
-        data[u'safeflg'] = 0
-        data[u'u']='https://passport.baidu.com/'
-        data[u'isPhone'] = ''
-        data[u'detect']= 1
-        data[u'gid']='6A3375C-5CE5-4696-A8C2-8BBE62516FAF'
-        data[u'quick_user']=0
-        data[u'logintype']='basicLogin'
-        data[u'logLoginType']= 'pc_loginBasic'
-        data[u'idc']=''
-        data[u'loginmerge']='true'
-        data[u'username']=acc
-        data[u'password']=password_rsaed
-        data[u'verifycode'] = vcode
-        data[u'rsakey']=rsakey
-        data[u'crypttype']=12
+        data[u'loginInitType']='0'
+        data[u'logLoginType']= 'sdk_login'
+        data[u'regLink'] = '1'
+        data[u'loginLink'] = '1'
+        data[u'isPhone'] = '0'
+        data[u'dialogVcodestr'] = '0'
+        data[u'code'] = ''
+        data[u'gid']=GID
         data[u'countrycode']=''
-        data[u'callback']=0
+        data[u'clientfrom']='native'
+        data[u'regtype']='1'
+        data[u'password']=password_rsaed
+        # 可以传空
+        data[u'verifycode'] = vcode
+        data[u'client']='ios'
+        data[u'action']='login'
+        data[u'adapter']='1'
+        data[u'dialogVerifyCode']=''
+        data[u'servertime'] = '4cd9f60139'
+        data[u'tpl']='tb'
+        data[u'dialogVcodesign'] = ''
+        data[u'smsLoginLink'] = '1'
+        data[u'v'] = str(int(time.time()))
+        data[u'login_share_strategy'] = 'silent'
+        data[u'loginmerge']='1'
+        data[u'username']=acc
 
         # start login
         data=http.request(url,data)
-        #data=json.loads(data)
-        err_no,code_string = self._check_login_error(data)
+        data=json.loads(data)
+
+        #err_no,code_string = self._check_login_error(data)
+        err_no = data[u'errInfo'][u'no']
+        err_msg = data[u'errInfo'][u'msg']
+        print err_no + err_msg
         '''
         if data[u'errInfo'][u'no']=='0':
             #login success & need save bduss
@@ -230,11 +237,13 @@ class BaiduTieba(object):
             return self.login(baiduUtf(acc),base64.b64encode(pwd.encode('utf-8')).decode(),vc,data[u'data'][u'codeString'])
         '''
         # 是否需要验证码
+        '''
         if err_no=='257' or err_no=='6' :
             url = 'https://passport.baidu.com/cgi-bin/genimage?'+ code_string + '&v='+str(int(time.time()*1000))
             http.download(url,cur_dir()+u'/',u'vcode.jpg')
             vc = raw_input('请输入验证码:')
             self.login(acc,pwd,vc,code_string)
+        '''
         if err_no=='0':
             # bduss = None
             for item in http.cookies():
