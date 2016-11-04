@@ -19,6 +19,22 @@ def createNumArrayList():
 
 #print(createNumArrayList())
 
+def bubbleSort(num_array):
+    """ 冒泡排序
+    Args:
+    Returns:
+    Raises:
+    """
+    for i in range(0, len(num_array) - 2, 1):
+        for j in range(0, len(num_array) - 1 - i, 1):
+            if num_array[j] > num_array[j+1]:
+                temp = num_array[j]
+                num_array[j] = num_array[j+1]
+                num_array[j+1] = temp
+                print "exchange num_array[%d]:%d num_array[%d]:%d " % (j, num_array[j], j + 1, num_array[j + 1])
+                print num_array
+
+
 def quickSort(num_array,start_idx,end_idx):
     """ 快速排序
     Args:
@@ -53,5 +69,6 @@ def quickSort(num_array,start_idx,end_idx):
 
 if __name__ == "__main__":
     print EX_ARRAY
-    quickSort(EX_ARRAY,0,len(EX_ARRAY)-1)
+    #quickSort(EX_ARRAY,0,len(EX_ARRAY)-1)
+    bubbleSort(EX_ARRAY)
     print EX_ARRAY
