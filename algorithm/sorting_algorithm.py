@@ -8,7 +8,7 @@
 import random
 
 EX_ARRAY = [10,9,4,7,2,1,6,5,3,8];
-#EX_ARRAY = [10,9]
+#EX_ARRAY = [2,6,5,7,4,3,1]
 
 def createNumArrayList():
     size = 10
@@ -34,6 +34,22 @@ def bubbleSort(num_array):
                 print "exchange num_array[%d]:%d num_array[%d]:%d " % (j, num_array[j], j + 1, num_array[j + 1])
                 print num_array
 
+def insertSort(num_array):
+    """ 直接插入排序
+    Args:
+    Returns:
+    Raises:
+    """
+    for i in range(1, len(num_array)):
+        if (num_array[i] < num_array[i-1]):
+            temp = num_array[i];
+            for j in range(i-1, -1, -1):
+                if num_array[j] > temp:
+                    num_array[j + 1] = num_array[j];
+                    num_array[j] = temp
+                    print num_array
+            #num_array[j+1] = temp;
+            print num_array
 
 def quickSort(num_array,start_idx,end_idx):
     """ 快速排序
@@ -70,5 +86,7 @@ def quickSort(num_array,start_idx,end_idx):
 if __name__ == "__main__":
     print EX_ARRAY
     #quickSort(EX_ARRAY,0,len(EX_ARRAY)-1)
-    bubbleSort(EX_ARRAY)
+    #bubbleSort(EX_ARRAY)
+    insertSort(EX_ARRAY)
     print EX_ARRAY
+    #print range(5,-1,-1)
