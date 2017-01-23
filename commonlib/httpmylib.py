@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+# 更名 httpmylib.py httplib.py 系统中已经包含
+# python 2.7 test passed
 
 __author__ = 'c8d8z8@gmail.com'
 '''
@@ -13,10 +15,11 @@ import cookielib
 cookie = cookielib.CookieJar()
 #自定义opener,并将opener跟Cookiejar对象绑定
 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookie))
-#安装opener,此后调用urlopen()时都会使用安装过的opener对象
-urllib2.install_opener(opener)
 #添加header emulate iphone 5s
 opener.addheaders = [('User-agent', 'Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.3 (KHTML, like Gecko) Version/8.0 Mobile/12A4345d Safari/600.1.4')]
+
+#安装opener,此后调用urlopen()时都会使用安装过的opener对象
+urllib2.install_opener(opener)
 
 import re
 import hashlib
@@ -25,6 +28,14 @@ import datetime
 import os
 
 import mysqllib
+
+def GET(url,data = None):
+    if data:
+        req = urllib2.Request(url,urllib.urlencode(data))
+    else:
+        req = urllib2.Request(url)
+    resp = urllib2.urlopen(req).read()
+    return resp
 
 def request(url,data = None,cookie=None):
     print url
@@ -114,4 +125,5 @@ def test_request():
 
 if __name__ == '__main__':
     test_request()
+    print urllib.urlencode({"username":"root","password":"ROOTXXOO"})
     print cookie

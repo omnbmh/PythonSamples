@@ -48,6 +48,22 @@ def delete():
 def commit():
     conn.commit()
 
+def insert_req_to_musql(data,url,param):
+    sql_data = {}
+
+    print json.dumps(data,ensure_ascii=False,indent=2)
+
+    sql_data['json_data'] = json.dumps(data,ensure_ascii=False,indent=2)
+    sql_data['snap_date'] = datetime.datetime.now()
+    sql_data['req_url'] = url
+    sql_data['req_param'] = param
+
+    sql = '''
+        insert into `json_data`(`json_data`,`snap_date`,`req_url`,`req_param`) values (%(json_data)s,%(snap_date)s,%(req_url)s,%(req_param)s)
+        '''
+    mysqllib.execute(sql,sql_data)
+    mysqllib.commit()
+    print 'request insert into mysql complete.'
 
 if __name__ == '__main__':
     #config = {'host':'127.0.0.1',
