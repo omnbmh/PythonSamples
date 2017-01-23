@@ -27,14 +27,14 @@ import json
 import datetime
 import os
 
-import mysqllib
-
 def GET(url,data = None):
     if data:
-        req = urllib2.Request(url,urllib.urlencode(data))
-    else:
-        req = urllib2.Request(url)
+        url = url + '?' + urllib.urlencode(data)
+        print 'get param : %s' % urllib.urlencode(data)
+    print 'get url : %s' % url
+    req = urllib2.Request(url)
     resp = urllib2.urlopen(req).read()
+    print resp
     return resp
 
 def request(url,data = None,cookie=None):
@@ -92,23 +92,6 @@ def paramparse(param):
     return body_data
 def cookies():
     return cookie
-
-def insert_req_to_musql(data,url,param):
-    sql_data = {}
-
-    print json.dumps(data,ensure_ascii=False,indent=2)
-
-    sql_data['json_data'] = json.dumps(data,ensure_ascii=False,indent=2)
-    sql_data['snap_date'] = datetime.datetime.now()
-    sql_data['req_url'] = url
-    sql_data['req_param'] = param
-
-    sql = '''
-        insert into `json_data`(`json_data`,`snap_date`,`req_url`,`req_param`) values (%(json_data)s,%(snap_date)s,%(req_url)s,%(req_param)s)
-        '''
-    mysqllib.execute(sql,sql_data)
-    mysqllib.commit()
-    print 'request insert into mysql complete.'
 
 def test_request():
     url = 'https://www.itoumi.com/sxb/products/loans.json'
