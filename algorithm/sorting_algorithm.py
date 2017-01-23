@@ -47,8 +47,6 @@ def insertSort(num_array):
                 if num_array[j] > temp:
                     num_array[j + 1] = num_array[j];
                     num_array[j] = temp
-                    print num_array
-            #num_array[j+1] = temp;
             print num_array
 
 def quickSort(num_array,start_idx,end_idx):
@@ -82,6 +80,13 @@ def quickSort(num_array,start_idx,end_idx):
         quickSort(num_array, start_idx, l-1)
         quickSort(num_array, l+1, end_idx)
 
+def shellSort():
+    """ 希尔排序
+    Args:
+    Returns:
+    Raises:
+    """
+    pass
 
 if __name__ == "__main__":
     print EX_ARRAY
